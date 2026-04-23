@@ -37,6 +37,12 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     perspective: 1500px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 /* --- Custom Scrollbar --- */
@@ -805,22 +811,7 @@ section {
 }
 
 /* --- 3D Scroll Reveal Utilities --- */
-.reveal-3d {
-    opacity: 0;
-    transform: perspective(1000px) rotateX(40deg) translateY(calc(100px + var(--parallax-y, 0px))) scale(0.9);
-    transform-origin: bottom center;
-    transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: transform, opacity;
-}
-
-.reveal-3d.active {
-    opacity: 1;
-    transform: perspective(1000px) rotateX(0deg) translateY(var(--parallax-y, 0px)) scale(1);
-}
-
-.reveal-3d.revealed {
-    transition: opacity 1s, transform 0s; /* Allow instant JS parallax updates without lag */
-}
+/* JavaScript manages .reveal-3d and flight magic entirely */
 
 /* --- 3D Envelope Intro --- */
 .invitation-intro {

@@ -1,3 +1,66 @@
+// --- Custom Cursor & Magnetic Effects (Load immediately) ---
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+
+if (cursorDot && cursorOutline) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let outlineX = mouseX;
+    let outlineY = mouseY;
+    
+    let lastMouseX = mouseX;
+    let lastMouseY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+    });
+
+    const loopCursor = () => {
+        const dx = mouseX - outlineX;
+        const dy = mouseY - outlineY;
+        
+        outlineX += dx * 0.15;
+        outlineY += dy * 0.15;
+        
+        // Pointer velocity animation (stretch based on speed and direction)
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        const scaleX = Math.min(Math.max(1 + distance * 0.005, 1), 2);
+        const scaleY = Math.min(Math.max(1 - distance * 0.005, 0.5), 1);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        
+        if (!cursorOutline.classList.contains('hover')) {
+            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+        } else {
+            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%) scale(1.5)`;
+        }
+        
+        requestAnimationFrame(loopCursor);
+    };
+    loopCursor();
+
+    // Magnetic Effects
+    document.addEventListener('DOMContentLoaded', () => {
+        const magnetics = document.querySelectorAll('a, .btn, .gallery-item, .detail-card');
+        magnetics.forEach(elem => {
+            elem.addEventListener('mousemove', (e) => {
+                const rect = elem.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                elem.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                cursorOutline.classList.add('hover');
+            });
+            
+            elem.addEventListener('mouseleave', () => {
+                elem.style.transform = ``;
+                cursorOutline.classList.remove('hover');
+            });
+        });
+    });
+}
+
 // --- 3D Envelope Intro ---
 document.body.style.overflow = 'hidden';
 
@@ -48,66 +111,7 @@ function raf(time) {
 
 requestAnimationFrame(raf);
 
-// --- Custom Cursor & Magnetic Effects ---
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
-
-if (cursorDot && cursorOutline) {
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let outlineX = mouseX;
-    let outlineY = mouseY;
-    
-    let lastMouseX = mouseX;
-    let lastMouseY = mouseY;
-
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        cursorDot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
-    });
-
-    const loopCursor = () => {
-        const dx = mouseX - outlineX;
-        const dy = mouseY - outlineY;
-        
-        outlineX += dx * 0.15;
-        outlineY += dy * 0.15;
-        
-        // Pointer velocity animation (stretch based on speed and direction)
-        const distance = Math.sqrt(dx*dx + dy*dy);
-        const scaleX = Math.min(Math.max(1 + distance * 0.005, 1), 2);
-        const scaleY = Math.min(Math.max(1 - distance * 0.005, 0.5), 1);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        
-        if (!cursorOutline.classList.contains('hover')) {
-            cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%)) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
-        } else {
-            cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%)) scale(1.5)`;
-        }
-        
-        requestAnimationFrame(loopCursor);
-    };
-    loopCursor();
-
-    // Magnetic Effects
-    const magnetics = document.querySelectorAll('a, .btn, .gallery-item, .detail-card');
-    magnetics.forEach(elem => {
-        elem.addEventListener('mousemove', (e) => {
-            const rect = elem.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            elem.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-            cursorOutline.classList.add('hover');
-        });
-        
-        elem.addEventListener('mouseleave', () => {
-            elem.style.transform = ``;
-            cursorOutline.classList.remove('hover');
-        });
-    });
-}
+// cursor logic moved to top
 
 // --- Scroll Progress & Parallax ---
 lenis.on('scroll', (e) => {
@@ -117,14 +121,46 @@ lenis.on('scroll', (e) => {
     const myBar = document.getElementById("myBar");
     if(myBar) myBar.style.width = scrolled + "%";
     
-    // Parallax update
-    const reveals = document.querySelectorAll('.reveal-3d');
-    reveals.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        // Distance from center of screen
-        const offset = (rect.top + rect.height / 2) - (window.innerHeight / 2);
-        // Multiplier controls parallax intensity
-        el.style.setProperty('--parallax-y', `${offset * 0.15}px`);
+    // Magical 3D Flight Parallax Update
+    const magicElements = document.querySelectorAll('.hero-content, .details-grid, .glass-card-3d, .story-card, .timeline-item, .section-title, .venue-details, .rsvp-card, .footer-content');
+    magicElements.forEach(el => {
+        // Calculate top accurately avoiding transform loop
+        let top = 0;
+        let current = el;
+        while(current && current.tagName !== 'BODY') {
+            top += current.offsetTop;
+            current = current.offsetParent;
+        }
+        
+        const center = top + el.offsetHeight / 2;
+        const windowCenter = window.scrollY + window.innerHeight / 2;
+        const offset = center - windowCenter;
+        const normalized = offset / window.innerHeight;
+        
+        let scale = 1;
+        let opacity = 1;
+        let blur = 0;
+        let y = 0;
+        let rotateX = 0;
+        
+        // Deep 3D Flight Physics
+        if (normalized > 0) { // Coming from deep space (bottom)
+            scale = 1 - Math.min(normalized * 0.8, 0.8);
+            opacity = 1 - (normalized * 1.5);
+            y = normalized * 150;
+            rotateX = normalized * 30;
+        } else { // Flying past the camera (top)
+            scale = 1 + Math.abs(normalized) * 1.5;
+            opacity = 1 - (Math.abs(normalized) * 1.5);
+            blur = Math.abs(normalized) * 10;
+        }
+        
+        opacity = Math.max(0, Math.min(1, opacity));
+        
+        el.style.transform = `perspective(1200px) translate3d(0, ${y}px, 0) scale(${scale}) rotateX(${rotateX}deg)`;
+        el.style.opacity = opacity;
+        el.style.filter = `blur(${blur}px)`;
+        el.style.willChange = 'transform, opacity, filter';
     });
 });
 
@@ -336,20 +372,19 @@ if (typeof THREE !== 'undefined') {
 
         // Add Floating Geometries
         const geometries = [
-            new THREE.IcosahedronGeometry(2, 0),
-            new THREE.TorusGeometry(1.5, 0.5, 16, 100),
-            new THREE.OctahedronGeometry(1.8, 0)
+            new THREE.IcosahedronGeometry(1.5, 0),
+            new THREE.OctahedronGeometry(1.2, 0)
         ];
 
-        for(let i = 0; i < 20; i++) {
+        for(let i = 0; i < 40; i++) {
             const geo = geometries[Math.floor(Math.random() * geometries.length)];
-            const mat = Math.random() > 0.3 ? goldMaterial : darkGreenMaterial;
+            const mat = Math.random() > 0.4 ? goldMaterial : darkGreenMaterial;
             const mesh = new THREE.Mesh(geo, mat);
             
             mesh.position.set(
-                (Math.random() - 0.5) * 60,
-                (Math.random() - 0.5) * 60,
-                (Math.random() - 0.5) * 40 - 10
+                (Math.random() - 0.5) * 40,
+                (Math.random() - 0.5) * 40,
+                (Math.random() - 1) * 100
             );
             
             mesh.rotation.set(
@@ -359,32 +394,34 @@ if (typeof THREE !== 'undefined') {
             );
             
             mesh.userData = {
-                rx: (Math.random() - 0.5) * 0.01,
-                ry: (Math.random() - 0.5) * 0.01,
-                rz: (Math.random() - 0.5) * 0.01,
-                yOffset: Math.random() * Math.PI * 2,
-                speed: 0.001 + Math.random() * 0.002
+                rx: (Math.random() - 0.5) * 0.02,
+                ry: (Math.random() - 0.5) * 0.02,
+                rz: (Math.random() - 0.5) * 0.02
             };
             
             scene.add(mesh);
             shapes.push(mesh);
         }
         
-        // Add Floating Dust Particles
+        // Add Dense Particle Field (Tunnel feel)
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 400;
+        const particlesCount = 1500;
         const posArray = new Float32Array(particlesCount * 3);
         
-        for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 100;
+        for(let i = 0; i < particlesCount * 3; i+=3) {
+            const radius = 5 + Math.random() * 30;
+            const theta = Math.random() * Math.PI * 2;
+            posArray[i] = Math.cos(theta) * radius; // x
+            posArray[i+1] = Math.sin(theta) * radius; // y
+            posArray[i+2] = (Math.random() - 1) * 150; // z
         }
         
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.15,
+            size: 0.12,
             color: 0xd4af37,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.8,
             blending: THREE.AdditiveBlending
         });
         
@@ -411,15 +448,31 @@ if (typeof THREE !== 'undefined') {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
 
+            // Camera Z follows scroll
+            const scrollZ = window.scrollY * 0.03;
+            camera.position.z = 30 - scrollZ;
+
             shapes.forEach(shape => {
                 shape.rotation.x += shape.userData.rx;
                 shape.rotation.y += shape.userData.ry;
                 shape.rotation.z += shape.userData.rz;
-                shape.position.y += Math.sin(elapsedTime * 0.5 + shape.userData.yOffset) * 0.015;
+                
+                // Infinite loop
+                if (shape.position.z > camera.position.z + 10) {
+                    shape.position.z -= 100;
+                }
             });
             
-            particlesMesh.rotation.y = elapsedTime * 0.03 + window.scrollY * 0.0005;
-            particlesMesh.rotation.x = elapsedTime * 0.015 + window.scrollY * 0.0002;
+            // Loop particles
+            const positions = particlesGeometry.attributes.position.array;
+            for(let i=2; i<particlesCount*3; i+=3) {
+                if(positions[i] > camera.position.z + 10) {
+                    positions[i] -= 150;
+                }
+            }
+            particlesGeometry.attributes.position.needsUpdate = true;
+            
+            particlesMesh.rotation.z = elapsedTime * 0.05;
 
             // Camera ease movement (Igloo style extreme follow)
             targetX = mouseX * 2.0;
@@ -427,7 +480,7 @@ if (typeof THREE !== 'undefined') {
             
             camera.position.x += (targetX - camera.position.x) * 0.05;
             camera.position.y += (-targetY - camera.position.y) * 0.05;
-            camera.lookAt(scene.position);
+            camera.lookAt(camera.position.x, camera.position.y, camera.position.z - 50);
 
             renderer.render(scene, camera);
         }
