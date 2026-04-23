@@ -38,7 +38,7 @@ const lenis = new Lenis({
     mouseMultiplier: 1,
     smoothTouch: false,
     touchMultiplier: 2,
-    infinite: false,
+    infinite: true,
 });
 
 function raf(time) {
@@ -47,6 +47,49 @@ function raf(time) {
 }
 
 requestAnimationFrame(raf);
+
+// --- Custom Cursor & Magnetic Effects ---
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+
+if (cursorDot && cursorOutline) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let outlineX = mouseX;
+    let outlineY = mouseY;
+    
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorDot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+    });
+
+    const loopCursor = () => {
+        outlineX += (mouseX - outlineX) * 0.15;
+        outlineY += (mouseY - outlineY) * 0.15;
+        cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%))`;
+        requestAnimationFrame(loopCursor);
+    };
+    loopCursor();
+
+    // Magnetic Effects
+    const magnetics = document.querySelectorAll('a, .btn, .gallery-item, .detail-card');
+    magnetics.forEach(elem => {
+        elem.addEventListener('mousemove', (e) => {
+            const rect = elem.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            elem.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            cursorOutline.classList.add('hover');
+        });
+        
+        elem.addEventListener('mouseleave', () => {
+            elem.style.transform = ``;
+            cursorOutline.classList.remove('hover');
+        });
+    });
+}
 
 // --- Scroll Progress Bar ---
 lenis.on('scroll', (e) => {
@@ -342,15 +385,15 @@ if (typeof THREE !== 'undefined') {
                 shape.position.y += Math.sin(elapsedTime * 0.5 + shape.userData.yOffset) * 0.015;
             });
             
-            particlesMesh.rotation.y = elapsedTime * 0.03;
-            particlesMesh.rotation.x = elapsedTime * 0.015;
+            particlesMesh.rotation.y = elapsedTime * 0.03 + window.scrollY * 0.0005;
+            particlesMesh.rotation.x = elapsedTime * 0.015 + window.scrollY * 0.0002;
 
-            // Camera ease movement
-            targetX = mouseX * 0.5;
-            targetY = mouseY * 0.5;
+            // Camera ease movement (Igloo style extreme follow)
+            targetX = mouseX * 2.0;
+            targetY = mouseY * 2.0;
             
-            camera.position.x += (targetX - camera.position.x) * 0.02;
-            camera.position.y += (-targetY - camera.position.y) * 0.02;
+            camera.position.x += (targetX - camera.position.x) * 0.05;
+            camera.position.y += (-targetY - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
             renderer.render(scene, camera);

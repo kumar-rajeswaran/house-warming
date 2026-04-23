@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <!-- 3D Envelope Intro -->
     <div id="invitation-intro" class="invitation-intro">
         <div class="envelope-scene">
@@ -212,18 +216,33 @@
     <section id="gallery" class="gallery">
         <div class="container">
             <h2 class="section-title text-center reveal-3d">Glimpses of Subiksham</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item glass-card-3d reveal-3d">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 1" class="popup-text">
-                </div>
-                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.1s;">
-                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 2" class="popup-text">
-                </div>
-                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.2s;">
-                    <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 3" class="popup-text">
-                </div>
-                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.3s;">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 4" class="popup-text">
+            <div class="gallery-marquee">
+                <div class="gallery-marquee-track">
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 1" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 2" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 3" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 4" class="popup-text">
+                    </div>
+                    <!-- Duplicate for infinite loop -->
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 1" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 2" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 3" class="popup-text">
+                    </div>
+                    <div class="gallery-item glass-card-3d reveal-3d">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 4" class="popup-text">
+                    </div>
                 </div>
             </div>
         </div>

@@ -676,19 +676,39 @@ section {
 }
 
 /* --- Gallery Section --- */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.gallery-marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%); /* Full width hack */
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.gallery-marquee-track {
+    display: inline-flex;
     gap: 2.5rem;
-    margin-top: 5rem;
+    animation: marquee 20s linear infinite;
+}
+
+.gallery-marquee-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 1.25rem)); }
 }
 
 .gallery-item {
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     position: relative;
+    width: 350px;
+    height: 450px;
+    flex-shrink: 0;
     box-shadow: var(--shadow-3d);
-    aspect-ratio: 4/3;
     cursor: pointer;
     padding: 0;
     border: 8px solid #fff;
@@ -1070,4 +1090,37 @@ section {
     .address-card {
         padding: 2.5rem 1.5rem;
     }
+}
+
+/* --- Custom Cursor --- */
+body {
+    cursor: none;
+}
+a, button, .btn, .glass-card-3d, .gallery-item {
+    cursor: none;
+}
+.cursor-dot, .cursor-outline {
+    position: fixed;
+    top: 0; left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: transform, width, height, background-color;
+}
+.cursor-dot {
+    width: 8px; height: 8px;
+    background-color: var(--secondary-color);
+}
+.cursor-outline {
+    width: 40px; height: 40px;
+    border: 1px solid var(--secondary-color);
+    transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.cursor-outline.hover {
+    width: 70px; height: 70px;
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: transparent;
 }
