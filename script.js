@@ -58,6 +58,9 @@ if (cursorDot && cursorOutline) {
     let outlineX = mouseX;
     let outlineY = mouseY;
     
+    let lastMouseX = mouseX;
+    let lastMouseY = mouseY;
+
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -65,9 +68,24 @@ if (cursorDot && cursorOutline) {
     });
 
     const loopCursor = () => {
-        outlineX += (mouseX - outlineX) * 0.15;
-        outlineY += (mouseY - outlineY) * 0.15;
-        cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%))`;
+        const dx = mouseX - outlineX;
+        const dy = mouseY - outlineY;
+        
+        outlineX += dx * 0.15;
+        outlineY += dy * 0.15;
+        
+        // Pointer velocity animation (stretch based on speed and direction)
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        const scaleX = Math.min(Math.max(1 + distance * 0.005, 1), 2);
+        const scaleY = Math.min(Math.max(1 - distance * 0.005, 0.5), 1);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        
+        if (!cursorOutline.classList.contains('hover')) {
+            cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%)) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+        } else {
+            cursorOutline.style.transform = `translate(calc(${outlineX}px - 50%), calc(${outlineY}px - 50%)) scale(1.5)`;
+        }
+        
         requestAnimationFrame(loopCursor);
     };
     loopCursor();
@@ -91,12 +109,23 @@ if (cursorDot && cursorOutline) {
     });
 }
 
-// --- Scroll Progress Bar ---
+// --- Scroll Progress & Parallax ---
 lenis.on('scroll', (e) => {
     const winScroll = e.animatedScroll;
     const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight) - window.innerHeight;
     const scrolled = (winScroll / height) * 100;
-    document.getElementById("myBar").style.width = scrolled + "%";
+    const myBar = document.getElementById("myBar");
+    if(myBar) myBar.style.width = scrolled + "%";
+    
+    // Parallax update
+    const reveals = document.querySelectorAll('.reveal-3d');
+    reveals.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        // Distance from center of screen
+        const offset = (rect.top + rect.height / 2) - (window.innerHeight / 2);
+        // Multiplier controls parallax intensity
+        el.style.setProperty('--parallax-y', `${offset * 0.15}px`);
+    });
 });
 
 // --- Sticky Navbar ---
@@ -143,12 +172,16 @@ function reveal() {
         const elementTop = reveals[i].getBoundingClientRect().top;
         const elementVisible = 150;
         
-        if (elementTop < windowHeight - elementVisible) {
+        if (elementTop < windowHeight - elementVisible && !reveals[i].classList.contains('active')) {
             reveals[i].classList.add('active');
+            setTimeout(() => {
+                reveals[i].classList.add('revealed');
+            }, 1000);
         }
     }
 }
-window.addEventListener('scroll', reveal);
+// Attach to lenis scroll loop for high-frequency updates
+lenis.on('scroll', reveal);
 reveal();
 
 // --- Countdown Timer ---
