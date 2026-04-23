@@ -216,63 +216,153 @@ if (window.innerWidth > 768) {
     });
 }
 
-// --- Initialize Particles.js ---
-if (window.particlesJS) {
-    particlesJS("particles-js", {
-        "particles": {
-            "number": {
-                "value": 50,
-                "density": { "enable": true, "value_area": 800 }
-            },
-            "color": { "value": "#d4af37" },
-            "shape": {
-                "type": "circle",
-                "stroke": { "width": 0, "color": "#000000" },
-                "polygon": { "nb_sides": 5 }
-            },
-            "opacity": {
-                "value": 0.5,
-                "random": true,
-                "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
-            },
-            "size": {
-                "value": 3,
-                "random": true,
-                "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false }
-            },
-            "line_linked": {
-                "enable": true,
-                "distance": 150,
-                "color": "#d4af37",
-                "opacity": 0.3,
-                "width": 1
-            },
-            "move": {
-                "enable": true,
-                "speed": 1.5,
-                "direction": "top",
-                "random": true,
-                "straight": false,
-                "out_mode": "out",
-                "bounce": false,
-                "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-            }
-        },
-        "interactivity": {
-            "detect_on": "canvas",
-            "events": {
-                "onhover": { "enable": true, "mode": "grab" },
-                "onclick": { "enable": true, "mode": "push" },
-                "resize": true
-            },
-            "modes": {
-                "grab": { "distance": 140, "line_linked": { "opacity": 0.8 } },
-                "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 },
-                "repulse": { "distance": 200, "duration": 0.4 },
-                "push": { "particles_nb": 4 },
-                "remove": { "particles_nb": 2 }
-            }
-        },
-        "retina_detect": true
-    });
+// --- Initialize Three.js Background ---
+if (typeof THREE !== 'undefined') {
+    const canvas = document.getElementById('three-canvas');
+    if (canvas) {
+        const scene = new THREE.Scene();
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Add Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffdf80, 1.5);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+        
+        // Materials
+        const goldMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xd4af37,
+            metalness: 0.8,
+            roughness: 0.2,
+            transmission: 0.1,
+            transparent: true,
+            opacity: 0.9,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1
+        });
+        
+        const darkGreenMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x1f4d3a,
+            metalness: 0.5,
+            roughness: 0.4,
+            clearcoat: 0.5
+        });
+
+        const shapes = [];
+
+        // Add Floating Geometries
+        const geometries = [
+            new THREE.IcosahedronGeometry(2, 0),
+            new THREE.TorusGeometry(1.5, 0.5, 16, 100),
+            new THREE.OctahedronGeometry(1.8, 0)
+        ];
+
+        for(let i = 0; i < 20; i++) {
+            const geo = geometries[Math.floor(Math.random() * geometries.length)];
+            const mat = Math.random() > 0.3 ? goldMaterial : darkGreenMaterial;
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            mesh.position.set(
+                (Math.random() - 0.5) * 60,
+                (Math.random() - 0.5) * 60,
+                (Math.random() - 0.5) * 40 - 10
+            );
+            
+            mesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                0
+            );
+            
+            mesh.userData = {
+                rx: (Math.random() - 0.5) * 0.01,
+                ry: (Math.random() - 0.5) * 0.01,
+                rz: (Math.random() - 0.5) * 0.01,
+                yOffset: Math.random() * Math.PI * 2,
+                speed: 0.001 + Math.random() * 0.002
+            };
+            
+            scene.add(mesh);
+            shapes.push(mesh);
+        }
+        
+        // Add Floating Dust Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 400;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            color: 0xd4af37,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+        
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX) * 0.05;
+            mouseY = (event.clientY - windowHalfY) * 0.05;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            shapes.forEach(shape => {
+                shape.rotation.x += shape.userData.rx;
+                shape.rotation.y += shape.userData.ry;
+                shape.rotation.z += shape.userData.rz;
+                shape.position.y += Math.sin(elapsedTime * 0.5 + shape.userData.yOffset) * 0.015;
+            });
+            
+            particlesMesh.rotation.y = elapsedTime * 0.03;
+            particlesMesh.rotation.x = elapsedTime * 0.015;
+
+            // Camera ease movement
+            targetX = mouseX * 0.5;
+            targetY = mouseY * 0.5;
+            
+            camera.position.x += (targetX - camera.position.x) * 0.02;
+            camera.position.y += (-targetY - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
 }
