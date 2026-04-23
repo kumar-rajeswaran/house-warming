@@ -1,3 +1,33 @@
+// --- 3D Envelope Intro ---
+document.body.style.overflow = 'hidden';
+
+const envelopeWrapper = document.querySelector('.envelope-wrapper');
+const introOverlay = document.getElementById('invitation-intro');
+const mainContent = document.getElementById('main-content');
+
+if (envelopeWrapper) {
+    envelopeWrapper.addEventListener('click', () => {
+        envelopeWrapper.classList.add('is-open');
+        
+        // After envelope animation completes
+        setTimeout(() => {
+            introOverlay.classList.add('hidden');
+            mainContent.classList.remove('main-content-hidden');
+            mainContent.classList.add('main-content-visible');
+            document.body.style.overflow = 'auto';
+            
+            // Trigger scroll reveal for the hero section
+            reveal();
+            
+            // Remove intro from DOM after transition
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+            }, 1500);
+            
+        }, 2000); // 2 seconds after click
+    });
+}
+
 // --- Scroll Progress Bar ---
 window.addEventListener('scroll', () => {
     const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -33,7 +63,6 @@ hamburger.addEventListener('click', () => {
     }
 });
 
-// Close mobile menu when link is clicked
 links.forEach(link => {
     link.addEventListener('click', () => {
         navLinks.classList.remove('active');
@@ -43,13 +72,13 @@ links.forEach(link => {
     });
 });
 
-// --- Scroll Reveal Animation ---
+// --- 3D Scroll Reveal Animation (Unfold Effect) ---
 function reveal() {
-    const reveals = document.querySelectorAll('.reveal');
+    const reveals = document.querySelectorAll('.reveal-3d');
     for (let i = 0; i < reveals.length; i++) {
         const windowHeight = window.innerHeight;
         const elementTop = reveals[i].getBoundingClientRect().top;
-        const elementVisible = 120; // slightly higher trigger point
+        const elementVisible = 150;
         
         if (elementTop < windowHeight - elementVisible) {
             reveals[i].classList.add('active');
@@ -57,11 +86,9 @@ function reveal() {
     }
 }
 window.addEventListener('scroll', reveal);
-// Trigger once on load
 reveal();
 
 // --- Countdown Timer ---
-// Target Date: May 28, 2026 05:00:00
 const targetDate = new Date("May 28, 2026 05:00:00").getTime();
 
 const countdownInterval = setInterval(() => {
@@ -74,7 +101,8 @@ const countdownInterval = setInterval(() => {
         document.getElementById("hours").innerText = "00";
         document.getElementById("minutes").innerText = "00";
         document.getElementById("seconds").innerText = "00";
-        document.querySelector(".countdown-section .section-title").innerText = "The Joyous Day is Here!";
+        const title = document.querySelector(".countdown-section .section-title");
+        if(title) title.innerText = "The Joyous Day is Here!";
         return;
     }
 
@@ -89,61 +117,81 @@ const countdownInterval = setInterval(() => {
     document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
 }, 1000);
 
-// --- Button Ripple Effect ---
-const buttons = document.querySelectorAll('.ripple');
-buttons.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        // Find existing ripples and remove them
-        let existingRipples = this.querySelector('.ripple-span');
-        if (existingRipples) {
-            existingRipples.remove();
+
+// --- 3D Mouse Parallax for Hero ---
+const heroContent = document.querySelector('.hero-content');
+const heroParticles = document.querySelectorAll('.shape-3d');
+
+// Only run on desktop
+if (window.innerWidth > 768) {
+    document.addEventListener('mousemove', (e) => {
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+        
+        if (heroContent) {
+            heroContent.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
         }
-
-        let x = e.clientX - e.target.getBoundingClientRect().left;
-        let y = e.clientY - e.target.getBoundingClientRect().top;
-
-        let ripples = document.createElement('span');
-        ripples.classList.add('ripple-span');
-        ripples.style.left = x + 'px';
-        ripples.style.top = y + 'px';
         
-        // Ensure size covers button
-        const size = Math.max(this.clientWidth, this.clientHeight);
-        ripples.style.width = ripples.style.height = size + 'px';
-        
-        // Offset to center ripple
-        ripples.style.marginTop = -(size/2) + 'px';
-        ripples.style.marginLeft = -(size/2) + 'px';
-
-        this.appendChild(ripples);
-
-        setTimeout(() => {
-            ripples.remove();
-        }, 600);
+        heroParticles.forEach((shape, index) => {
+            const speed = (index + 1) * 0.3;
+            const x = (window.innerWidth - e.pageX * speed) / 100;
+            const y = (window.innerHeight - e.pageY * speed) / 100;
+            
+            shape.style.transform = `translate3d(${x}px, ${y}px, ${speed * 50}px) rotateX(${yAxis * speed}deg) rotateY(${xAxis * speed}deg)`;
+        });
     });
-});
 
-// --- Add subtle floating particles to hero ---
-const particlesContainer = document.getElementById('particles');
-if (particlesContainer) {
-    const particleCount = 20; // Number of floating dots
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.classList.add('particle');
+    document.addEventListener('mouseleave', () => {
+        if (heroContent) {
+            heroContent.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        }
+    });
+}
+
+// --- Custom 3D Tilt Effect for Cards ---
+const tiltElements = document.querySelectorAll('.glass-card-3d, .gallery-item');
+
+if (window.innerWidth > 768) {
+    tiltElements.forEach(el => {
         
-        // Randomize position, size, and animation duration
-        const size = Math.random() * 8 + 4; // 4px to 12px
-        const left = Math.random() * 100; // 0% to 100%
-        const duration = Math.random() * 10 + 10; // 10s to 20s
-        const delay = Math.random() * 10; // 0s to 10s delay
+        const popupElements = el.querySelectorAll('.popup-text, .popup-text-high');
         
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${left}%`;
-        particle.style.top = '100%';
-        particle.style.animationDuration = `${duration}s`;
-        particle.style.animationDelay = `${delay}s`;
+        el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top;  
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Limit rotation to avoid breaking text flow
+            const rotateX = ((y - centerY) / centerY) * -10; 
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            el.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            el.style.transition = 'none';
+            
+            // Push inner elements outwards
+            popupElements.forEach(child => {
+                if(child.classList.contains('popup-text-high')) {
+                    child.style.transform = 'translateZ(90px)';
+                } else {
+                    child.style.transform = 'translateZ(60px)';
+                }
+            });
+        });
         
-        particlesContainer.appendChild(particle);
-    }
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            
+            popupElements.forEach(child => {
+                if(child.classList.contains('popup-text-high')) {
+                    child.style.transform = 'translateZ(70px)';
+                } else {
+                    child.style.transform = 'translateZ(40px)';
+                }
+            });
+        });
+    });
 }

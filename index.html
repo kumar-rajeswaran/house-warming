@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,6 +18,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 3D Envelope Intro -->
+    <div id="invitation-intro" class="invitation-intro">
+        <div class="envelope-scene">
+            <div class="envelope-wrapper">
+                <div class="envelope-back"></div>
+                <div class="envelope-letter">
+                    <div class="letter-content">
+                        <i class="fas fa-om letter-icon"></i>
+                        <h3>Subiksham</h3>
+                        <p>Housewarming Invitation</p>
+                    </div>
+                </div>
+                <div class="envelope-front"></div>
+                <div class="envelope-flap"></div>
+            </div>
+            <p class="click-instruction">Click to open</p>
+        </div>
+    </div>
+
+    <!-- Main Content wrapper -->
+    <div id="main-content" class="main-content-hidden">
 
     <!-- Navbar -->
     <nav id="navbar" class="navbar">
@@ -42,23 +63,30 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero">
-        <div class="particles" id="particles"></div>
-        <div class="hero-content fade-in-up">
-            <div class="hero-border">
-                <p class="pre-title">You are invited to the</p>
-                <h1 class="main-title">Housewarming Ceremony</h1>
-                <p class="home-name">"Subiksham"</p>
-                <div class="divider">
+        <div class="particles" id="particles">
+            <div class="shape-3d shape-cube" style="top: 15%; left: 10%;"></div>
+            <div class="shape-3d shape-circle" style="top: 20%; right: 15%;"></div>
+            <div class="shape-3d shape-ring" style="top: 60%; left: 15%;"></div>
+            <div class="shape-3d shape-cube" style="bottom: 20%; right: 20%; transform: scale(0.7);"></div>
+            <div class="shape-3d shape-circle" style="bottom: 25%; left: 25%; transform: scale(0.6);"></div>
+            <div class="shape-3d shape-ring" style="top: 10%; right: 35%; transform: scale(0.5);"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-border glass-card-3d">
+                <p class="pre-title popup-text">You are invited to the</p>
+                <h1 class="main-title popup-text">Housewarming Ceremony</h1>
+                <p class="home-name popup-text">"Subiksham"</p>
+                <div class="divider popup-text">
                     <span>&#10086;</span>
                 </div>
-                <p class="subtext">We warmly invite you and your family to bless our new home.</p>
-                <div class="date-time">
+                <p class="subtext popup-text">We warmly invite you and your family to bless our new home.</p>
+                <div class="date-time popup-text">
                     <p class="date"><i class="far fa-calendar-alt"></i> 28 May 2026</p>
                     <p class="time"><i class="far fa-clock"></i> 5:00 AM – 6:30 AM</p>
                 </div>
-                <div class="cta-group">
-                    <a href="#location" class="btn btn-primary ripple">View Location</a>
-                    <a href="#details" id="save-date-btn" class="btn btn-secondary ripple">Save the Date</a>
+                <div class="cta-group popup-text">
+                    <a href="#location" class="btn btn-primary popup-text-high">View Location</a>
+                    <a href="#details" class="btn btn-secondary popup-text-high">Save the Date</a>
                 </div>
             </div>
         </div>
@@ -68,68 +96,68 @@
     </section>
 
     <!-- Blessings Section -->
-    <section id="blessings" class="blessings reveal">
+    <section id="blessings" class="blessings reveal-3d">
         <div class="container text-center">
-            <div class="blessing-text">
-                <i class="fas fa-om blessing-icon"></i>
-                <h2>With the blessings of</h2>
-                <p>Lord Rama, Mahakaliyamman & Munnuramman</p>
+            <div class="blessing-text glass-card-3d">
+                <i class="fas fa-om blessing-icon popup-text"></i>
+                <h2 class="popup-text">With the blessings of</h2>
+                <p class="popup-text">Lord Rama, Mahakaliyamman & Munnuramman</p>
             </div>
         </div>
     </section>
 
     <!-- Event Details Section -->
-    <section id="details" class="details reveal">
+    <section id="details" class="details">
         <div class="container">
-            <h2 class="section-title text-center">Event Details</h2>
+            <h2 class="section-title text-center reveal-3d">Event Details</h2>
             <div class="cards-grid">
                 <!-- Date Card -->
-                <div class="detail-card glass-card">
-                    <div class="card-icon"><i class="far fa-calendar-check"></i></div>
-                    <h3>Date</h3>
-                    <p>Thursday, 28th May 2026</p>
+                <div class="detail-card glass-card-3d reveal-3d">
+                    <div class="card-icon popup-text"><i class="far fa-calendar-check"></i></div>
+                    <h3 class="popup-text">Date</h3>
+                    <p class="popup-text">Thursday, 28th May 2026</p>
                 </div>
                 <!-- Time Card -->
-                <div class="detail-card glass-card">
-                    <div class="card-icon"><i class="far fa-clock"></i></div>
-                    <h3>Muhurtham</h3>
-                    <p>5:00 AM to 6:30 AM</p>
+                <div class="detail-card glass-card-3d reveal-3d" style="transition-delay: 0.1s;">
+                    <div class="card-icon popup-text"><i class="far fa-clock"></i></div>
+                    <h3 class="popup-text">Muhurtham</h3>
+                    <p class="popup-text">5:00 AM to 6:30 AM</p>
                 </div>
                 <!-- Venue Card -->
-                <div class="detail-card glass-card">
-                    <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
-                    <h3>Venue</h3>
-                    <p>"Subiksham", 4, Veerapandi,<br>Mettupalayam Road,<br>Coimbatore - 641019</p>
+                <div class="detail-card glass-card-3d reveal-3d" style="transition-delay: 0.2s;">
+                    <div class="card-icon popup-text"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3 class="popup-text">Venue</h3>
+                    <p class="popup-text">"Subiksham", 4, Veerapandi,<br>Mettupalayam Road,<br>Coimbatore - 641019</p>
                 </div>
                 <!-- Contact Card -->
-                <div class="detail-card glass-card">
-                    <div class="card-icon"><i class="fas fa-phone-alt"></i></div>
-                    <h3>Contact</h3>
-                    <p>Kumar & Chithra</p>
+                <div class="detail-card glass-card-3d reveal-3d" style="transition-delay: 0.3s;">
+                    <div class="card-icon popup-text"><i class="fas fa-phone-alt"></i></div>
+                    <h3 class="popup-text">Contact</h3>
+                    <p class="popup-text">Kumar & Chithra</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Countdown Section -->
-    <section id="countdown-section" class="countdown-section reveal">
+    <section id="countdown-section" class="countdown-section reveal-3d">
         <div class="container text-center">
             <h2 class="section-title">Awaiting the Joyous Day</h2>
             <div class="countdown" id="countdown">
-                <div class="time-box">
-                    <span id="days">00</span>
+                <div class="time-box glass-card-3d popup-text">
+                    <span id="days" class="popup-text-high">00</span>
                     <p>Days</p>
                 </div>
-                <div class="time-box">
-                    <span id="hours">00</span>
+                <div class="time-box glass-card-3d popup-text" style="transition-delay: 0.1s;">
+                    <span id="hours" class="popup-text-high">00</span>
                     <p>Hours</p>
                 </div>
-                <div class="time-box">
-                    <span id="minutes">00</span>
+                <div class="time-box glass-card-3d popup-text" style="transition-delay: 0.2s;">
+                    <span id="minutes" class="popup-text-high">00</span>
                     <p>Minutes</p>
                 </div>
-                <div class="time-box">
-                    <span id="seconds">00</span>
+                <div class="time-box glass-card-3d popup-text" style="transition-delay: 0.3s;">
+                    <span id="seconds" class="popup-text-high">00</span>
                     <p>Seconds</p>
                 </div>
             </div>
@@ -137,50 +165,50 @@
     </section>
 
     <!-- Family Section -->
-    <section id="family" class="family reveal">
+    <section id="family" class="family">
         <div class="container text-center">
-            <h2 class="section-title">Looking Forward to Hosting You</h2>
+            <h2 class="section-title reveal-3d">Looking Forward to Hosting You</h2>
             <div class="hosts-wrapper">
-                <div class="host-card glass-card">
-                    <div class="host-avatar">
+                <div class="host-card glass-card-3d reveal-3d">
+                    <div class="host-avatar popup-text">
                         <i class="fas fa-user-tie"></i>
                     </div>
-                    <h3>Kumar</h3>
-                    <p>Host</p>
+                    <h3 class="popup-text">Kumar</h3>
+                    <p class="popup-text">Host</p>
                 </div>
-                <div class="host-card glass-card">
-                    <div class="host-avatar">
+                <div class="host-card glass-card-3d reveal-3d" style="transition-delay: 0.1s;">
+                    <div class="host-avatar popup-text">
                         <i class="fas fa-user"></i>
                     </div>
-                    <h3>Chithra</h3>
-                    <p>Hostess</p>
+                    <h3 class="popup-text">Chithra</h3>
+                    <p class="popup-text">Hostess</p>
                 </div>
-                <div class="host-card glass-card">
-                    <div class="host-avatar">
+                <div class="host-card glass-card-3d reveal-3d" style="transition-delay: 0.2s;">
+                    <div class="host-avatar popup-text">
                         <i class="fas fa-child"></i>
                     </div>
-                    <h3>Yashvi Krishna</h3>
-                    <p>Little Host</p>
+                    <h3 class="popup-text">Yashvi Krishna</h3>
+                    <p class="popup-text">Little Host</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Location Section -->
-    <section id="location" class="location reveal">
+    <section id="location" class="location">
         <div class="container text-center">
-            <h2 class="section-title">Find Your Way</h2>
-            <div class="address-card glass-card">
-                <div class="location-icon">
+            <h2 class="section-title reveal-3d">Find Your Way</h2>
+            <div class="address-card glass-card-3d reveal-3d">
+                <div class="location-icon popup-text">
                     <i class="fas fa-map-marked-alt"></i>
                 </div>
-                <h3>Address</h3>
-                <p>Next City,</p>
-                <p>4, Veerapandi,</p>
-                <p>Mettupalayam Road,</p>
-                <p>Coimbatore - 641019</p>
+                <h3 class="popup-text">Address</h3>
+                <p class="popup-text">Next City,</p>
+                <p class="popup-text">4, Veerapandi,</p>
+                <p class="popup-text">Mettupalayam Road,</p>
+                <p class="popup-text">Coimbatore - 641019</p>
                 
-                <a href="https://maps.google.com/?q=4,+Veerapandi,+Mettupalayam+Road,+Coimbatore+-+641019" target="_blank" class="btn btn-primary map-btn ripple">
+                <a href="https://maps.google.com/?q=4,+Veerapandi,+Mettupalayam+Road,+Coimbatore+-+641019" target="_blank" class="btn btn-primary map-btn popup-text-high">
                     <i class="fas fa-directions"></i> Open in Maps
                 </a>
             </div>
@@ -188,36 +216,35 @@
     </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="gallery reveal">
+    <section id="gallery" class="gallery">
         <div class="container">
-            <h2 class="section-title text-center">Glimpses of Subiksham</h2>
+            <h2 class="section-title text-center reveal-3d">Glimpses of Subiksham</h2>
             <div class="gallery-grid">
-                <!-- Replace these with actual images inside the assets folder -->
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 1">
+                <div class="gallery-item glass-card-3d reveal-3d">
+                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 1" class="popup-text">
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 2">
+                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.1s;">
+                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 2" class="popup-text">
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 3">
+                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.2s;">
+                    <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 3" class="popup-text">
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 4">
+                <div class="gallery-item glass-card-3d reveal-3d" style="transition-delay: 0.3s;">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House Image 4" class="popup-text">
                 </div>
             </div>
         </div>
     </section>
 
     <!-- RSVP Section -->
-    <section id="rsvp" class="rsvp reveal">
+    <section id="rsvp" class="rsvp">
         <div class="container text-center">
-            <div class="rsvp-card glass-card">
-                <h2 class="section-title">RSVP</h2>
-                <p class="rsvp-text">We look forward to your presence to grace the occasion.</p>
-                <div class="rsvp-buttons">
-                    <a href="tel:+910000000000" class="btn btn-primary ripple"><i class="fas fa-phone-alt"></i> Call Now</a>
-                    <a href="https://wa.me/910000000000" target="_blank" class="btn btn-whatsapp ripple"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <div class="rsvp-card glass-card-3d reveal-3d">
+                <h2 class="section-title popup-text">RSVP</h2>
+                <p class="rsvp-text popup-text">We look forward to your presence to grace the occasion.</p>
+                <div class="rsvp-buttons popup-text">
+                    <a href="tel:+910000000000" class="btn btn-primary popup-text-high"><i class="fas fa-phone-alt"></i> Call Now</a>
+                    <a href="https://wa.me/910000000000" target="_blank" class="btn btn-whatsapp popup-text-high"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -225,14 +252,16 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container text-center">
-            <p class="footer-blessing">May your presence bring joy and blessings to our new home.</p>
-            <div class="divider footer-divider">
+        <div class="container text-center glass-card-3d reveal-3d" style="margin: 0 auto; max-width: 800px;">
+            <p class="footer-blessing popup-text">May your presence bring joy and blessings to our new home.</p>
+            <div class="divider footer-divider popup-text">
                 <span>&#10086;</span>
             </div>
-            <p class="footer-names">With love,<br>Kumar, Chithra & Yashvi Krishna</p>
+            <p class="footer-names popup-text">With love,<br>Kumar, Chithra & Yashvi Krishna</p>
         </div>
     </footer>
+
+    </div> <!-- End Main Content wrapper -->
 
     <!-- Custom JS -->
     <script src="script.js"></script>
