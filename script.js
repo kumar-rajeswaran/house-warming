@@ -17,6 +17,10 @@ if (cursorDot && cursorOutline) {
         cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
     });
 
+    let currentScaleX = 1;
+    let currentScaleY = 1;
+    let currentAngle = 0;
+
     const loopCursor = () => {
         const dx = mouseX - outlineX;
         const dy = mouseY - outlineY;
@@ -24,17 +28,26 @@ if (cursorDot && cursorOutline) {
         outlineX += dx * 0.15;
         outlineY += dy * 0.15;
         
-        // Pointer velocity animation (stretch based on speed and direction)
         const distance = Math.sqrt(dx*dx + dy*dy);
-        const scaleX = Math.min(Math.max(1 + distance * 0.005, 1), 2);
-        const scaleY = Math.min(Math.max(1 - distance * 0.005, 0.5), 1);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        
-        if (!cursorOutline.classList.contains('hover')) {
-            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
-        } else {
-            cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%) scale(1.5)`;
+        if (distance > 0.5 && !cursorOutline.classList.contains('hover')) {
+            currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
         }
+        
+        let targetScaleX = 1;
+        let targetScaleY = 1;
+        
+        if (cursorOutline.classList.contains('hover')) {
+            targetScaleX = 1.5;
+            targetScaleY = 1.5;
+        } else {
+            targetScaleX = Math.min(Math.max(1 + distance * 0.005, 1), 2);
+            targetScaleY = Math.min(Math.max(1 - distance * 0.005, 0.5), 1);
+        }
+        
+        currentScaleX += (targetScaleX - currentScaleX) * 0.15;
+        currentScaleY += (targetScaleY - currentScaleY) * 0.15;
+        
+        cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%) rotate(${currentAngle}deg) scale(${currentScaleX}, ${currentScaleY})`;
         
         requestAnimationFrame(loopCursor);
     };
@@ -115,11 +128,7 @@ requestAnimationFrame(raf);
 
 // --- Scroll Progress & Parallax ---
 lenis.on('scroll', (e) => {
-    const winScroll = e.animatedScroll;
-    const height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight) - window.innerHeight;
-    const scrolled = (winScroll / height) * 100;
-    const myBar = document.getElementById("myBar");
-    if(myBar) myBar.style.width = scrolled + "%";
+
     
     // Magical 3D Flight Parallax Update
     const magicElements = document.querySelectorAll('.hero-content, .details-grid, .glass-card-3d, .story-card, .timeline-item, .section-title, .venue-details, .rsvp-card, .footer-content');
@@ -143,21 +152,25 @@ lenis.on('scroll', (e) => {
         let y = 0;
         let rotateX = 0;
         
-        // Deep 3D Flight Physics
-        if (normalized > 0) { // Coming from deep space (bottom)
-            scale = 1 - Math.min(normalized * 0.8, 0.8);
-            opacity = 1 - (normalized * 1.5);
-            y = normalized * 150;
-            rotateX = normalized * 30;
-        } else { // Flying past the camera (top)
-            scale = 1 + Math.abs(normalized) * 1.5;
-            opacity = 1 - (Math.abs(normalized) * 1.5);
-            blur = Math.abs(normalized) * 10;
+        // Deep 3D Flight Physics with Reading Deadzone
+        const deadzone = 0.15; // 15% of screen height deadzone
+        const distFromCenter = Math.abs(normalized);
+        const activeNormalized = distFromCenter > deadzone ? (distFromCenter - deadzone) * Math.sign(normalized) : 0;
+        
+        if (activeNormalized > 0) { // Coming from deep space (bottom)
+            scale = 1 - Math.min(activeNormalized * 0.6, 0.6);
+            opacity = 1 - (activeNormalized * 2);
+            y = activeNormalized * 100;
+            rotateX = activeNormalized * 25;
+        } else if (activeNormalized < 0) { // Flying past the camera (top)
+            scale = 1 + Math.abs(activeNormalized) * 1.5;
+            opacity = 1 - (Math.abs(activeNormalized) * 2.5);
+            blur = Math.abs(activeNormalized) * 15;
         }
         
         opacity = Math.max(0, Math.min(1, opacity));
         
-        el.style.transform = `perspective(1200px) translate3d(0, ${y}px, 0) scale(${scale}) rotateX(${rotateX}deg)`;
+        el.style.transform = `perspective(1200px) translate3d(0, ${y}px, 0) scale(${scale}) rotateX(calc(${rotateX}deg + var(--tilt-x, 0deg))) rotateY(var(--tilt-y, 0deg))`;
         el.style.opacity = opacity;
         el.style.filter = `blur(${blur}px)`;
         el.style.willChange = 'transform, opacity, filter';
@@ -261,21 +274,15 @@ if (window.innerWidth > 768) {
         const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
         
         if (heroContent) {
-            heroContent.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            heroContent.style.setProperty('--tilt-y', xAxis + 'deg');
+            heroContent.style.setProperty('--tilt-x', yAxis + 'deg');
         }
-        
-        heroParticles.forEach((shape, index) => {
-            const speed = (index + 1) * 0.3;
-            const x = (window.innerWidth - e.pageX * speed) / 100;
-            const y = (window.innerHeight - e.pageY * speed) / 100;
-            
-            shape.style.transform = `translate3d(${x}px, ${y}px, ${speed * 50}px) rotateX(${yAxis * speed}deg) rotateY(${xAxis * speed}deg)`;
-        });
     });
 
     document.addEventListener('mouseleave', () => {
         if (heroContent) {
-            heroContent.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            heroContent.style.setProperty('--tilt-y', '0deg');
+            heroContent.style.setProperty('--tilt-x', '0deg');
         }
     });
 }
@@ -300,8 +307,8 @@ if (window.innerWidth > 768) {
             const rotateX = ((y - centerY) / centerY) * -10; 
             const rotateY = ((x - centerX) / centerX) * 10;
             
-            el.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            el.style.transition = 'none';
+            el.style.setProperty('--tilt-x', rotateX + 'deg');
+            el.style.setProperty('--tilt-y', rotateY + 'deg');
             
             // Push inner elements outwards
             popupElements.forEach(child => {
@@ -314,8 +321,8 @@ if (window.innerWidth > 768) {
         });
         
         el.addEventListener('mouseleave', () => {
-            el.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            el.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            el.style.setProperty('--tilt-x', '0deg');
+            el.style.setProperty('--tilt-y', '0deg');
             
             popupElements.forEach(child => {
                 if(child.classList.contains('popup-text-high')) {
